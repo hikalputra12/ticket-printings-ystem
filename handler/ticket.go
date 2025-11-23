@@ -32,9 +32,9 @@ func (tickethandler *TicketHandler) Request(req dto.Request) {
 		fmt.Printf("error creating new request: %v", err)
 	} else {
 		fmt.Println("===Harga Tiket ===")
-		fmt.Printf("Penumpang: %+v\n", response.Name)
-		fmt.Printf("Tujuan: %+v\n", response.Destination)
-		fmt.Printf("Harga: %+v\n", response.Price)
+		fmt.Printf("Penumpang: %s\n", response.Name)
+		fmt.Printf("Tujuan: %s\n", response.Destination)
+		fmt.Printf("Harga: Rp  %.2f\n", float64(response.Price))
 		fmt.Println("===================")
 	}
 }

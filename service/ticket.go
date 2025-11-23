@@ -37,7 +37,7 @@ func (ticketService *TicketService) NewRequestByUser(req dto.Request) (dto.Respo
 		if strings.ToLower(destination.Destination) == destinationInput {
 			// Buat user response baru
 			newUserResponse := dto.Response{
-				Name:        destination.Name,
+				Name:        req.Name,
 				Destination: destination.Destination,
 				Price:       destination.Price,
 			}
