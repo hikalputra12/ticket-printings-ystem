@@ -1,0 +1,15 @@
+[
+	{
+		"destination": "Jakarta",
+		"price": 150000
+	},
+	{
+		"destination": "Bandung",
+		"price": 120000
+	},
+	{
+		"destination": "Surabaya",
+		"price": 200000
+	}
+]
+
