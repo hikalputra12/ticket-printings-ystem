@@ -14,6 +14,7 @@ func NewTicketService() TicketService {
 	return TicketService{}
 }
 
+
 // fungsi untuk membuat request baru oleh user
 // menerima input dari user dan mengembalikan model.User
 // bisa juga mengembalikan error jika ada masalah dalam proses pembuatan request

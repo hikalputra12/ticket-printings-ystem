@@ -1,36 +1,38 @@
 package utils
 
-// file.go berisi fungsi untuk membaca dan menulis file JSON (destinations)
-// sebagai pembantu untuk service
+// file.go berisi fungsi untuk membaca dan menulis file JSON
+// atau sebagai pembantu
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"os"
-	"path/filepath"
-
+	"path/filepath" // Tambahkan import filepath jika Anda ingin menggunakan os.MkdirAll("data") dengan lebih robust
 	"ticket-printing-system/model"
 )
 
-// DestinationsFilePath adalah lokasi file destinasi
-const DestinationsFilePath = "data/destinations.json"
+// file paths berisi lokasi dan harga
+const DestinationsFilePath = "data/destination.json"
 
-// EnsureDestinationsFile memastikan file destinasi ada, jika tidak ada dibuatkan
-func EnsureDestinationsFile() error {
+// fungsi untuk mengecek file ada atau tidak dan jika file kosong akan menghasilkan array kodong
+func EnsureUsersFile() error {
 	_, err := os.Stat(DestinationsFilePath)
-	if errors.Is(err, os.ErrNotExist) {
-		// buat direktori jika belum ada
-		if err := os.MkdirAll(filepath.Dir(DestinationsFilePath), 0o755); err != nil {
+
+	// filepath.Dir() untuk membuat direktori jika belum ada
+	//Menentukan apakah error yang diberikan (err) setara secara semantik dengan error target (target)
+	if errors.Is(err, os.ErrNotExist) { //cek err apakah sama atau tidak
+		if err := os.MkdirAll(filepath.Dir(DestinationsFilePath), 0755); err != nil { //hasil error maka buat file baru
+
 			return err
 		}
-		return os.WriteFile(DestinationsFilePath, []byte("[]"), 0o644)
+		return os.WriteFile(DestinationsFilePath, []byte("[]"), 0644) //menulis file nya
 	}
-	return nil
+	return nil //jika tidak ada error maka return nil
 }
 
-// ReadDestinationsFromFile membaca destinasi dari file JSON dan mengembalikan slice model.Ticket
-func ReadDestinationsFromFile() ([]model.Ticket, error) {
-	if err := EnsureDestinationsFile(); err != nil {
+// fungsi untuk membaca destinasi dari file
+func ReadDestinationsFromFile() ([]model.Ticket, error) { // Tipe kembalian menggunakan []model.Tiket
+	//cek file ada atau tidak
+	if err := EnsureUsersFile(); err != nil {
 		return nil, err
 	}
 
@@ -39,24 +41,11 @@ func ReadDestinationsFromFile() ([]model.Ticket, error) {
 		return nil, err
 	}
 
-	var tickets []model.Ticket
-	if err := json.Unmarshal(bytes, &tickets); err != nil {
-		return nil, fmt.Errorf("gagal mengurai data destinasi: %w", err)
+	var routes []model.Ticket // Menggunakan model.Ticket secara konsisten
+	if err := json.Unmarshal(bytes, &routes); err != nil {
+		// Tampilkan error unmarshal yang lebih deskriptif
+		return nil, errors.New("gagal mengurai data destinasi: " + err.Error())
 	}
 
-	return tickets, nil
-}
-
-// WriteDestinationsToFile menulis slice model.Ticket ke file destinasi
-func WriteDestinationsToFile(tickets []model.Ticket) error {
-	bytes, err := json.MarshalIndent(tickets, "", "  ")
-	if err != nil {
-		return err
-	}
-	return os.WriteFile(DestinationsFilePath, bytes, 0o644)
-}
-
-// backward-compatible alias (opsional) jika ada kode lama yang menggunakan EnsureUsersFile
-func EnsureUsersFile() error {
-	return EnsureDestinationsFile()
+	return routes, nil
 }
